@@ -1,0 +1,14 @@
+---
+- hosts: dev 
+  tasks:
+    - name: delete files
+      file:
+        path: /tmp/{{item}}
+        state: absent
+      with_items:
+        - file1
+        - file2
+        - file3
+
+
+

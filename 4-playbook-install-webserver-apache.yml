@@ -1,0 +1,12 @@
+---
+
+-  hosts : ansible-node1
+   become: true
+   name: 4-playbook-install-webserver-apache
+   tasks:
+     - name: Install Apache
+       apt: 
+           name: apache2 
+           state: latest
+     - name: add website page
+       script: hello.sh

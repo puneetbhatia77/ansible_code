@@ -1,0 +1,14 @@
+---
+
+-  hosts : dev
+   become: true
+   name: playbook-install
+   tasks:
+     - name: Remove Packages
+       apt: 
+           name: "{{ item }}"
+           state: absent
+       with_items:
+           - vim
+           - git
+           - curl

@@ -1,0 +1,12 @@
+---
+
+-  hosts : test 
+   become: true
+   vars:
+       packages: [ 'vim', 'git', 'curl' ]
+   tasks:
+     - name: Remove Packages
+       apt: 
+           name: "{{ item }}"
+           state: absent
+       with_items: "{{ packages }}"

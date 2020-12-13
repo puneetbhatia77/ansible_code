@@ -1,0 +1,5 @@
+[dev]
+ansible-node1 ansible_ssh_user=vagrant
+
+[test]
+ansible-node2 ansible_ssh_user=ansible_user

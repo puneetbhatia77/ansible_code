@@ -1,0 +1,19 @@
+---
+
+-  hosts : dev
+   become: true
+   name: 6-playbook-remove-webservers
+   tasks:
+     - name: un-install Apache
+       apt:
+           name: apache2
+           state: absent
+            
+-  hosts : test
+   become: true
+   name: 5-playbook-remove-webservers
+   tasks:
+     - name: un-install Nginx
+       apt:
+           name: nginx-common
+           state: absent

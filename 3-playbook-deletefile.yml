@@ -1,0 +1,9 @@
+---
+
+- hosts: all 
+  tasks:
+    - name: delete a file
+      file:
+        path: /tmp/file-playbook-1
+        state: absent
+

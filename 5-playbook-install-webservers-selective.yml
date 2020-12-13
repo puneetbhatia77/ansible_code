@@ -1,0 +1,21 @@
+---
+
+-  hosts : dev
+   become: true
+   name: 5-playbook-install-webservers
+   tasks:
+     - name: Install Apache
+       apt:
+           name: apache2
+           state: latest
+     - name: add website page
+       script: hello.sh
+            
+-  hosts : test
+   become: true
+   name: 5-playbook-install-webservers
+   tasks:
+     - name: Install Nginx
+       apt:
+           name: nginx
+           state: latest
