@@ -1,0 +1,23 @@
+---
+- hosts: slave1
+  become: yes
+  become_user: root
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+                                            
+    - name: install JDK 11
+      apt:
+        name: openjdk-11-jdk
+        state: present
+
+    - name: install tomcat
+      apt: name=tomcat state=present
+    - name: start tomcat service
+      service: name=tomcat state=started
+    - name: deploy war
+      get_url: url="https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war" dest=/usr/share/tomcat/webapps
+    - name: restart tomcat service
+      service: name=tomcat state=restarted 
