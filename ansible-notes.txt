@@ -25,7 +25,7 @@ ansible --version
     - ssh-keygen
   
 # ansible master 
-    - ssh-copy-id -i vagrant@ansible-node1  # this will copy public key to client under ~/.ssh/authorized_keys file
+    - ssh-copy-id vagrant@ansible-node1  # this will copy public key to client under ~/.ssh/authorized_keys file
     - ansible all -m ping
     - ansible ansible-node1 -m ping
 
@@ -93,18 +93,6 @@ ansible-node1 ansible_ssh_user=vagrant
 ansible-node2 ansible_ssh_user=ansible_user
 -------------------------------------------------------
 ############ ansible ad-hoc commands #####################################################
-
-ansible -i <inventory name> -m <module name>
-ansible all -i inventory -m ping
-ansible dev -i inventory -m ping
-ansible dev1 -i inventory -m ping   # no such pattern/env
-ansible test -i inventory -m ping
-
-ansible all -m setup -a "filter=*ipv4*"
-
-ansible all -a "df -h" -u root                  # check disk usage
-ansible all -a "uptime" -u root 
-
 ansible localhost -m file -a "path=/root/ansible_code/tmp-file state=touch"       # create file (change - yellow color)
 ansible localhost -m file -a "path=/root/ansible_code/tmp-file state=touch"       # create file (every time change - yellow color)
 ansible localhost -m file -a "path=/root/ansible_code/tmp-file state=touch"       # create file (every time change - yellow color)
@@ -117,9 +105,32 @@ ansible localhost -m file -a "path=/root/ansible_code/tmp-file state=absent"    
 
 ansible localhost -m user -a "name=john password=john" -b   # -b means become root user
 
-ansible all -m user -a "name=john password=john" -b    # make sure all users under invetory should have sudo access to create user. [/etc/sudoers - ansible_user ALL=(ALL) NOPASSWD: ALL ] 
+------------------------------------------------------
 
 
+ansible all -m ping
+ansible dev -m ping
+ansible dev1 -m ping   # no such pattern/env
+ansible test -m ping
+
+ansible all -m setup
+ansible all -m setup -a "filter=*ipv4*"
+
+ansible all -a "df -h" -u root                  # check disk usage
+ansible all -a "uptime" -u root 
+
+ansible all -m file -a "path=~/tmp-file state=touch"       # create file (change - yellow color)
+ansible all -m file -a "path=~/tmp-file state=touch"       # create file (every time change - yellow color)
+ansible all -m file -a "path=~/tmp-file state=touch"       # create file (every time change - yellow color)
+ansible all –a "mkdir ~/tmp" #create dir at all nodes
+
+ansible all -m copy -a "src=~/tmp-file dest=~/tmp"
+
+ansible -m file -a "path=/root/ansible_code/tmp-file state=absent"       # delete file (change - yellow color)
+ansible -m file -a "path=/root/ansible_code/tmp-file state=absent"       # delete file (no change - green color)
+
+ansible all -m user -a "name=john password=john" -b   # -b means become root user
+----------------------------------------------
 id john    # to verify if user has been created
 
 vi /etc/ansible/ansible.cfg    # configuration file
@@ -155,7 +166,7 @@ ansible-node1 ansible_ssh_user=vagrant
 ansible-node2 ansible_ssh_user=ansible_user
 -------------------------------------------------
 
-ansible-playbook -i inventory  1-playbook-createfile-specific-host.yml              # run only for specific host - dev          
+ansible-playbook 1-playbook-createfile-specific-host.yml              # run only for specific host - dev          
 ###############################################################################################################
 ################playbook 2 ################################################################################
 
@@ -171,7 +182,7 @@ root@ansible-master:~/ansible_code# vi 2-playbook-createfile.yml
 
 -------------------------------------------------------------
 
-ansible-playbook -i inventory  2-playbook-createfile.yml              
+ansible-playbook 2-playbook-createfile.yml              
 ###############################################################################################################
 ################playbook 3 ####################################################################################
 
@@ -187,7 +198,7 @@ root@ansible-master:~/ansible_code# vi 3-playbook-deletefile.yml
 
 -------------------------------------------------------------
 
-ansible-playbook -i inventory  3-playbook-deletefile.yml                 
+ansible-playbook 3-playbook-deletefile.yml                 
 ###############################################################################################################
 ################playbook 4 ####################################################################################
 root@ansible-master:~/ansible_code# vi 4-playbook-install-webserver-apache.yml
@@ -206,8 +217,8 @@ root@ansible-master:~/ansible_code# vi 4-playbook-install-webserver-apache.yml
 
 
 ---------------------------------------------------------------------------------------
-ansible-playbook  -i inventory  4-playbook-install-webserver-apache.yml --syntax-check
-ansible-playbook  -i inventory  4-playbook-install-webserver-apache.yml
+ansible-playbook 4-playbook-install-webserver-apache.yml --syntax-check
+ansible-playbook 4-playbook-install-webserver-apache.yml
 ###############################################################################################################
 ################playbook 5 ####################################################################################
 root@ansible-master:~/ansible_code# vi 5-playbook-install-webservers-selective.yml
@@ -233,7 +244,7 @@ root@ansible-master:~/ansible_code# vi 5-playbook-install-webservers-selective.y
            name: nginx
            state: latest
 -------------------------------------------------------------------
-ansible-playbook  -i inventory  5-playbook-install-webservers-selective.yml
+ansible-playbook 5-playbook-install-webservers-selective.yml
 ###############################################################################################################
 ################playbook 6 ####################################################################################
 root@ansible-master:~/ansible_code# vi 6-playbook-remove-webservers-selective.yml
@@ -258,7 +269,7 @@ root@ansible-master:~/ansible_code# vi 6-playbook-remove-webservers-selective.ym
            state: absent
 
 -------------------------------------------------------------------
-ansible-playbook  -i inventory 6-playbook-remove-webservers-selective.yml
+ansible-playbook 6-playbook-remove-webservers-selective.yml
 ###############################################################################################################
 ################playbook 7 ####################################################################################
 root@ansible-master:~/ansible_code# vi 7-playbook-with_loop-install-packages.yml
@@ -278,7 +289,7 @@ root@ansible-master:~/ansible_code# vi 7-playbook-with_loop-install-packages.yml
            - curl
 
 -------------------------------------------------------------------
-ansible-playbook  -i inventory 7-playbook-with_loop-install-packages.yml
+ansible-playbook 7-playbook-with_loop-install-packages.yml
 ###############################################################################################################
 ################playbook 8 ####################################################################################
 root@ansible-master:~/ansible_code# vi 8-playbook-with_loop-remove-packages.yml
@@ -296,8 +307,9 @@ root@ansible-master:~/ansible_code# vi 8-playbook-with_loop-remove-packages.yml
            - vim
            - git
            - curl
+
 -------------------------------------------------------------------
-ansible-playbook  -i inventory 8-playbook-with_loop-remove-packages.yml
+ansible-playbook 8-playbook-with_loop-remove-packages.yml
 ###############################################################################################################
 ################playbook 9 ####################################################################################
 root@ansible-master:~/ansible_code# vi 9-playbook-array-install-packages.yml
@@ -315,7 +327,7 @@ root@ansible-master:~/ansible_code# vi 9-playbook-array-install-packages.yml
        with_items: "{{ packages }}"
 
 -------------------------------------------------------------------
-ansible-playbook  -i inventory 9-playbook-array-install-packages.yml
+ansible-playbook 9-playbook-array-install-packages.yml
 ###############################################################################################################
 ################playbook 10 ####################################################################################
 root@ansible-master:~/ansible_code# vi 10-playbook-array-remove-packages.yaml
@@ -331,8 +343,87 @@ root@ansible-master:~/ansible_code# vi 10-playbook-array-remove-packages.yaml
            name: "{{ item }}"
            state: absent
        with_items: "{{ packages }}"
+
 -------------------------------------------------------------------
-ansible-playbook  -i inventory 10-playbook-array-remove-packages.yaml
+ansible-playbook 10-playbook-array-remove-packages.yaml
+###############################################################################################################
+################playbook 11 ####################################################################################
+root@ansible-master:~/ansible_code# vi 11-playbook-with_loop-create-files.yml
+---
+- hosts: dev
+  tasks:
+    - name: create files
+      file:
+        path: /tmp/{{item}}
+        state: touch
+      with_items:
+        - file1
+        - file2
+        - file3
+-------------------------------------------------------------------
+ansible-playbook 11-playbook-array-remove-packages.yaml
+###############################################################################################################
+################playbook 12 ####################################################################################
+root@ansible-master:~/ansible_code# vi 12-playbook-with_loop-delete-files.yml
+---
+- hosts: dev
+  tasks:
+    - name: delete files
+      file:
+        path: /tmp/{{item}}
+        state: absent
+      with_items:
+        - file1
+        - file2
+        - file3
+-------------------------------------------------------------------
+ansible-playbook 12-playbook-with_loop-delete-files.yaml
+###############################################################################################################
+################playbook 13 ####################################################################################
+root@ansible-master:~/ansible_code# vi 13-create-user.yml
+---
+- name: Create New Users
+  hosts: all
+  become: true
+  gather_facts: false
+  vars_files:
+    - my_vault_create_user.yml
+  tasks:
+    - name: Create Users
+      user:
+        name: "{{ item }}"
+        password: "{{ my_password | password_hash('sha512') }}"
+        shell: /bin/bash
+        #update_password: on_create    #to avoid updating password hash in /etc/shadow
+      loop:
+        - alice
+        - vincent
+-------------------------------------------------
+ansible-vault create my_vault_create_user.yml    #my_vault
+my_password: mysecret$1      
+ansible-vault view my_vault_create_user.yml
+
+ansible-playbook --ask-vault-pass 13-create-user.yml
+
+
+--------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
