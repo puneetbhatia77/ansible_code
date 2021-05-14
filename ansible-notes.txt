@@ -379,6 +379,15 @@ root@ansible-master:~/ansible_code# vi 12-playbook-with_loop-delete-files.yml
 -------------------------------------------------------------------
 ansible-playbook 12-playbook-with_loop-delete-files.yaml
 ###############################################################################################################
+--------------------------------------------
+vault.yml
+
+ansible-vault create vault.yml   #will ask for password to create a new enctypted password  # vault used AES256
+ansible-vault edit vault.yml  # edit encrypted playbook
+ansible-vault rekey vault.yml # change password
+ansible-vault encrypt target.yml
+ansible-vault decrypt target.yml
+
 ################playbook 13 ####################################################################################
 root@ansible-master:~/ansible_code# vi 13-create-user.yml
 ---
