@@ -416,14 +416,27 @@ ansible-playbook --ask-vault-pass 13-create-user.yml
 
 
 --------------------------------------------
+Ansible roles
 
+ansible-galacy --version
+mkdir -p playbooks/roles
+cd playbooks/roles
+ansible-galaxy init webserver
+vi webserver/tasks/main.yml
+- name: install apache2
+  action: apt name=apache2 state=latest
 
+cd ..
+root@ansible-master:~/ansible_code/playbooks#
+vi master.yml
 
+ - hosts: test
+   become: yes
+   roles:
+     - webserver
 
-
-
-
-
+root@ansible-master:~/ansible_code/playbooks# ansible-playbook master.yml
+----------------------------------------------------------------------------------
 
 
 
