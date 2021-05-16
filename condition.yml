@@ -1,0 +1,13 @@
+--- #gathering facts playbook
+ - hosts: all
+   become: yes
+   connection: ssh
+   gather_facts: yes
+
+   tasks:
+     - name: install apache on debian
+       action: apt name=apache2 state=present
+       when: ansible_os_family == "Debian"
+     - name: install apache on redhat
+       action: yum name=httpd state=present
+       when: ansible_os_family == "RedHat"
