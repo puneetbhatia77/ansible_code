@@ -1,6 +1,6 @@
 ---
 
--  hosts : dev
+-  hosts : all
    become: true
    name: 6-playbook-remove-webservers
    tasks:
@@ -8,7 +8,9 @@
        apt:
            name: apache2
            state: absent
-            
+           autoremove: yes
+           purge: yes
+
 -  hosts : test
    become: true
    name: 5-playbook-remove-webservers
