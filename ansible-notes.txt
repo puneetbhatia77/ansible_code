@@ -126,9 +126,10 @@ ansible all –a "mkdir ~/tmp" #create dir at all nodes
 
 ansible all -m copy -a "src=~/tmp-file dest=~/tmp"
 
-ansible -m file -a "path=/root/ansible_code/tmp-file state=absent"       # delete file (change - yellow color)
-ansible -m file -a "path=/root/ansible_code/tmp-file state=absent"       # delete file (no change - green color)
+ansible all -m file -a "path=/root/ansible_code/tmp-file state=absent"       # delete file (change - yellow color)
+ansible all -m file -a "path=/root/ansible_code/tmp-file state=absent"       # delete file (no change - green color)
 
+#usermod -G sudo ansible_user
 ansible all -m user -a "name=john password=john" -b   # -b means become root user
 ----------------------------------------------
 id john    # to verify if user has been created
@@ -383,6 +384,7 @@ ansible-playbook 12-playbook-with_loop-delete-files.yaml
 vault.yml
 
 ansible-vault create vault.yml   #will ask for password to create a new enctypted password  # vault used AES256
+ansible-vault view vault.yml   # to display the conents of vault file in plain text mode
 ansible-vault edit vault.yml  # edit encrypted playbook
 ansible-vault rekey vault.yml # change password
 ansible-vault encrypt target.yml
