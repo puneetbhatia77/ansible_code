@@ -7,6 +7,6 @@
    tasks:
      - name: Remove Packages
        apt: 
-           name: "{{ item }}"
+           name: "{{ packages }}"
            state: absent
        with_items: "{{ packages }}"
