@@ -1,5 +1,5 @@
 --- #gathering facts playbook
- - hosts: all
+ - hosts: dev
    become: yes
    connection: ssh
    gather_facts: yes
