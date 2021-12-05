@@ -1,0 +1,2 @@
+- name: install nginx
+  action: apt name=nginx state=latest

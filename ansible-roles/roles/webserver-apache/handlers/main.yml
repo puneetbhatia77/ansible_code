@@ -1,0 +1,4 @@
+---
+# handlers file for webserver
+ - name: host static webpage  #should match with notify details
+   script: hello.sh

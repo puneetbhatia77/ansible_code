@@ -1,0 +1,11 @@
+--- # master playbook for webserver
+
+ - hosts: dev
+   become: yes
+   roles:
+     - webserver-apache
+ 
+ - hosts: test
+   become: yes
+   roles:
+     - webserver-nginx
