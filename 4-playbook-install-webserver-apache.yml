@@ -6,6 +6,7 @@
    tasks:
      - name: Install Apache
        apt: 
+           update_cache: yes
            name: apache2 
            state: latest
      - name: add website page
