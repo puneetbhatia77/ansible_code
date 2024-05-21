@@ -440,7 +440,7 @@ cd ..
 root@ansible-master:~/ansible_code/playbooks#
 vi master.yml
 
- - hosts: test
+ - hosts: dev
    become: yes
    roles:
      - webserver
