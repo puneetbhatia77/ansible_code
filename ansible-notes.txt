@@ -445,7 +445,7 @@ vi master.yml
    roles:
      - webserver
 
-root@ansible-master:~/ansible_code/playbooks# ansible-playbook master.yml
+root@ansible-master:~/ansible_code/playbooks# ansible-playbook -i ../inventory master.yml
 ----------------------------------------------------------------------------------
 
 
