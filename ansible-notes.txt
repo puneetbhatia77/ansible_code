@@ -44,7 +44,6 @@ vi /etc/hosts
 
 # ansible-node2 machine
     - adduser ansible_user   (and give passwd -same as of now)
-    - ansible_user ALL=(ALL) NOPASSWD: ALL            # add this line to /etc/sudoers
 
 ssh-copy-id -i ansible_user@ansible-node2
 
@@ -103,15 +102,24 @@ ansible all -i inventory -m copy -a "src=/root/ansible_code/tmp-file dest=~/tmp"
 ansible localhost -m file -a "path=/root/ansible_code/tmp-file state=absent"       # delete file (change - yellow color)
 ansible localhost -m file -a "path=/root/ansible_code/tmp-file state=absent"       # delete file (no change - green color)
 
-ansible localhost -m user -a "name=john password=john" -b   # -b means become root user
+ansible localhost -m file -a "path=/root/ansible_code1 state=directory"            # create dir (change - yellow color for first time)
+ansible localhost -m file -a "path=/root/ansible_code1 state=directory"            # create dir (no change - green color for second time onwards)
 
+ansible localhost -m user -a "name=john password=john" -b   # -b means become root user
+id john            # to verify if user has been created
+cat /etc/passwd    # another way to verify if user has been created
+
+ansible all -m user -a "name=john password=john" -b    # make sure all users under inventory should have sudo access to create user. [sudo usermod -aG sudo ansible_user ] 
+
+id john            # to verify if user has been created
+cat /etc/passwd    # another way to verify if user has been created
 ------------------------------------------------------
 
 
 ansible all -m ping
-ansible dev -m ping
-ansible dev1 -m ping   # no such pattern/env
-ansible test -m ping
+ansible -i inventory dev -m ping
+ansible -i inventory dev1 -m ping   # no such pattern/env
+ansible -i inventory test -m ping
 
 ansible all -m setup
 ansible all -m setup -a "filter=*ipv4*"
@@ -167,7 +175,7 @@ ansible-node1 ansible_ssh_user=vagrant
 ansible-node2 ansible_ssh_user=ansible_user
 -------------------------------------------------
 
-ansible-playbook 1-playbook-createfile-specific-host.yml              # run only for specific host - dev          
+ansible-playbook -i inventory 1-playbook-createfile-specific-host.yml              # run only for specific host - dev          
 ###############################################################################################################
 ################playbook 2 ################################################################################
 
@@ -183,7 +191,7 @@ root@ansible-master:~/ansible_code# vi 2-playbook-createfile.yml
 
 -------------------------------------------------------------
 
-ansible-playbook 2-playbook-createfile.yml              
+ansible-playbook -i inventory 2-playbook-createfile.yml              
 ###############################################################################################################
 ################playbook 3 ####################################################################################
 
@@ -199,7 +207,7 @@ root@ansible-master:~/ansible_code# vi 3-playbook-deletefile.yml
 
 -------------------------------------------------------------
 
-ansible-playbook 3-playbook-deletefile.yml                 
+ansible-playbook -i inventory 3-playbook-deletefile.yml                 
 ###############################################################################################################
 ################playbook 4 ####################################################################################
 root@ansible-master:~/ansible_code# vi 4-playbook-install-webserver-apache.yml
@@ -218,8 +226,8 @@ root@ansible-master:~/ansible_code# vi 4-playbook-install-webserver-apache.yml
 
 
 ---------------------------------------------------------------------------------------
-ansible-playbook 4-playbook-install-webserver-apache.yml --syntax-check
-ansible-playbook 4-playbook-install-webserver-apache.yml
+ansible-playbook -i inventory 4-playbook-install-webserver-apache.yml --syntax-check
+ansible-playbook -i inventory 4-playbook-install-webserver-apache.yml
 ###############################################################################################################
 ################playbook 5 ####################################################################################
 root@ansible-master:~/ansible_code# vi 5-playbook-install-webservers-selective.yml
@@ -245,7 +253,7 @@ root@ansible-master:~/ansible_code# vi 5-playbook-install-webservers-selective.y
            name: nginx
            state: latest
 -------------------------------------------------------------------
-ansible-playbook 5-playbook-install-webservers-selective.yml
+ansible-playbook -i inventory 5-playbook-install-webservers-selective.yml
 ###############################################################################################################
 ################playbook 6 ####################################################################################
 root@ansible-master:~/ansible_code# vi 6-playbook-remove-webservers-selective.yml
@@ -270,7 +278,7 @@ root@ansible-master:~/ansible_code# vi 6-playbook-remove-webservers-selective.ym
            state: absent
 
 -------------------------------------------------------------------
-ansible-playbook 6-playbook-remove-webservers-selective.yml
+ansible-playbook -i inventory 6-playbook-remove-webservers-selective.yml
 ###############################################################################################################
 ################playbook 7 ####################################################################################
 root@ansible-master:~/ansible_code# vi 7-playbook-with_loop-install-packages.yml
@@ -290,7 +298,7 @@ root@ansible-master:~/ansible_code# vi 7-playbook-with_loop-install-packages.yml
            - curl
 
 -------------------------------------------------------------------
-ansible-playbook 7-playbook-with_loop-install-packages.yml
+ansible-playbook -i inventory 7-playbook-with_loop-install-packages.yml
 ###############################################################################################################
 ################playbook 8 ####################################################################################
 root@ansible-master:~/ansible_code# vi 8-playbook-with_loop-remove-packages.yml
@@ -310,7 +318,7 @@ root@ansible-master:~/ansible_code# vi 8-playbook-with_loop-remove-packages.yml
            - curl
 
 -------------------------------------------------------------------
-ansible-playbook 8-playbook-with_loop-remove-packages.yml
+ansible-playbook -i inventory 8-playbook-with_loop-remove-packages.yml
 ###############################################################################################################
 ################playbook 9 ####################################################################################
 root@ansible-master:~/ansible_code# vi 9-playbook-array-install-packages.yml
@@ -328,7 +336,7 @@ root@ansible-master:~/ansible_code# vi 9-playbook-array-install-packages.yml
        with_items: "{{ packages }}"
 
 -------------------------------------------------------------------
-ansible-playbook 9-playbook-array-install-packages.yml
+ansible-playbook -i inventory 9-playbook-array-install-packages.yml
 ###############################################################################################################
 ################playbook 10 ####################################################################################
 root@ansible-master:~/ansible_code# vi 10-playbook-array-remove-packages.yaml
@@ -346,7 +354,7 @@ root@ansible-master:~/ansible_code# vi 10-playbook-array-remove-packages.yaml
        with_items: "{{ packages }}"
 
 -------------------------------------------------------------------
-ansible-playbook 10-playbook-array-remove-packages.yaml
+ansible-playbook -i inventory 10-playbook-array-remove-packages.yaml
 ###############################################################################################################
 ################playbook 11 ####################################################################################
 root@ansible-master:~/ansible_code# vi 11-playbook-with_loop-create-files.yml
@@ -362,7 +370,7 @@ root@ansible-master:~/ansible_code# vi 11-playbook-with_loop-create-files.yml
         - file2
         - file3
 -------------------------------------------------------------------
-ansible-playbook 11-playbook-array-remove-packages.yaml
+ansible-playbook -i inventory 11-playbook-array-remove-packages.yaml
 ###############################################################################################################
 ################playbook 12 ####################################################################################
 root@ansible-master:~/ansible_code# vi 12-playbook-with_loop-delete-files.yml
@@ -378,7 +386,7 @@ root@ansible-master:~/ansible_code# vi 12-playbook-with_loop-delete-files.yml
         - file2
         - file3
 -------------------------------------------------------------------
-ansible-playbook 12-playbook-with_loop-delete-files.yaml
+ansible-playbook -i inventory 12-playbook-with_loop-delete-files.yaml
 ###############################################################################################################
 --------------------------------------------
 vault.yml
